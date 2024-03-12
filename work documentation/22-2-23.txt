@@ -1,0 +1,31 @@
+#Created own Security group and mapped to the instance template\
+-- To allow only for MYIP
+CODE :
+resource "aws_security_group" "airflow-sg" {
+  name        = "airflow-security-group"
+  description = "Allow MYIP inbound traffic"
+  vpc_id      = vpc-035421cb609afc552
+
+#INBOUND RULE
+  ingress {
+    description      = "TCP from VPC"
+    from_port        = 443
+    to_port          = 443
+    protocol         = "tcp"
+    cidr_blocks      = [var.myip]
+    ipv6_cidr_blocks = [var.myip]
+  }
+
+#OUTBOUND RULE 
+  egress {
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
+  tags = {
+    Name = "airflow-security-group"
+  }
+}

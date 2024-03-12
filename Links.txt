@@ -1,0 +1,55 @@
+Conditions :
+https://developer.hashicorp.com/terraform/language/expressions/custom-conditions#input-variable-validation
+
+template files :
+https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file
+
+conditions in terraform :
+https://blog.gruntwork.io/terraform-tips-tricks-loops-if-statements-and-gotchas-f739bbae55f9
+
+LOGIN THROUGH SSH :
+https://jhooq.com/terraform-ssh-into-aws-ec2/
+
+Airflow installation and setup :
+https://airflow.apache.org/docs/apache-airflow/stable/start.html
+
+Airflow installation video:
+https://youtu.be/CLUhL6-RpqU
+
+PSQL connection commands :
+https://www.geeksforgeeks.org/postgresql-psql-commands/
+
+https://hasura.io/blog/top-psql-commands-and-flags-you-need-to-know-postgresql/
+
+PSQL VIDEO:
+https://youtu.be/XrCFu9LM1v8
+https://robust-dinosaur-2ef.notion.site/Running-Airflow-on-a-small-AWS-EC2-Instance-8e2a42d2ce7946c3a3d753abc13f2e57
+youtube.com/watch?v=o88LNQDH2uI
+POSTGRE DOCUMENTATION:https://www.postgresql.org/download/
+
+DBEAVER SQL INSTANCE SETUP :
+https://dbeaver.io/download/
+ N
+
+ DATABASE BACKUP:
+ https://thedbadmin.com/postgresql-backup-using-bash-script/
+
+ PSQL BASH SCRIPTING LINKS :
+ https://askubuntu.com/questions/1389013/setting-up-postgresql-db-with-bash-script-using-variables-from-env-file
+ https://www.prisma.io/dataguide/postgresql/connecting-to-postgresql-databases
+
+
+ AIRFLOW VIDEOS :
+ https://youtu.be/S1eapG6gjLU
+
+ AIRFLOW CONNECT TO EXTERNAL DB:
+ https://youtu.be/auyfJq5b9Io
+
+ Files managing in the terraform:
+ https://www.youtube.com/watch?v=hkoxlJGklaM
+ 
+ 
+ 
+
+
+

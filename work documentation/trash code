@@ -1,0 +1,58 @@
+#out-pub-ip     = aws_instance.airflow-dev.public_ip
+#out-priv-ip    = aws_instance.airflow-dev-0.private_ip
+#subnet        = var.subnet
+#linux         = "true"
+#subnet-id      = "subnet-033dcaa15df9dbb7d"
+
+
+
+module:
+ebs
+#tags = {
+        #   Name = "${local.aws_prefix}-boot-disk"
+        #}
+
+
+#tags = {
+        #    Name = "${local.aws_prefix}-t-additional-disk"
+        #}
+#network_interfaces {
+        #associate_public_ip_address = true
+      #  subnet_id = var.subnet-id
+    #}
+
+
+    output "publicip" {
+        value = var.out-pub-ip
+    }
+    
+    output "pivateip" {
+        value = aws_instance.airflow-dev.private_ip
+    }
+
+
+
+
+
+    provisioner "file" {
+        source = "../scripts/jenkins-init.sh"
+        destination = "/tmp/jenkins-init.sh"
+      }
+    
+      provisioner "local-exec" {
+      #command = "echo aws_instance.airflow-dev.public_ip >> public_ips.txt"
+      inline =[
+        "chmod u+x /tmp/jenkins-init.sh",
+        "sudo /tmp/jenkins-init.sh"
+      ]
+    }
+
+
+    sudo wget -O /etc/yum.repos.d/jenkins.repo \
+    https://pkg.jenkins.io/redhat-stable/jenkins.repo
+sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io.key
+sudo dnf upgrade
+# Add required dependencies for the jenkins package
+sudo dnf install java-11-openjdk
+sudo dnf install jenkins
+sudo systemctl daemon-reload

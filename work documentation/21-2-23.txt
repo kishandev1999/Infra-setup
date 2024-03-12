@@ -1,0 +1,122 @@
+FOR GIT authnetication :
+-- Created the repo : AWS-Terraform
+-- Added all code file in the repo
+-- For Authentication 
+   Go to settings -- ssh -- Add your public key (generated via ssh-keygen)
+-- clone your repo
+-- Sign in to your git account via this command
+
+
+For AWS authentication :
+--INSTALLED AWSCLI into local machine
+   open powershell - choco install awscli
+-- Authenticated via iam user : Accesskey and secret key
+
+# FOR NAMING PURPOSE DECLARED THIS LOCALS
+locals {
+aws_prefix = "aws-${substr(var.region,0,2)}-${substr(var.environment,0,1)}-${var.application}"
+#aws-eu-west2-airflow
+}
+
+
+Created the KEY first
+CODE : 
+resource "aws_key_pair" "airflow-key" {
+  key_name = "airflow"
+  public_key = var.public-key
+}
+
+YOUR LOCAL PUBLIC KEY WILL BE SAVED IN A FILE, HERE I SAVED AS AIRFLOW.PUB
+
+Created the DISK for template and taken snapshot for it
+CODE : 
+#ADDITIONAL DISK CREATION 
+resource "aws_ebs_volume" "additional-disk" {
+  availability_zone = var.zone
+  size              = var.add-disk-size
+
+  tags = {
+    Name = "${local.aws_prefix}-ini-additional-disk"
+  }
+}
+
+#SNAPSHOT 
+resource "aws_ebs_snapshot" "add_snapshot" {
+  volume_id = aws_ebs_volume.additional-disk.id
+
+  tags = {
+    Name = "${local.aws_prefix}-additional-disk-snapshot"
+    Application = var.application
+  }
+}
+
+
+Created a launch template with 2 disks
+BOOT DISK AND ADDITIONAL DISK 
+-- Additional disk taken from the snapshot
+-- Boot disk created from the template itself
+CODE :
+#LAUNCH TEMPLATE
+resource "aws_launch_template" "linux" {
+    count = var.linux ? 1 : 0
+    name = "linux-machine-templates"
+    instance_type = var.instance-type #t2.micro
+    key_name = aws_key_pair.airflow-key.key_name
+    image_id = var.image-id
+    vpc_security_group_ids = ["sg-1234567"]
+    
+    #BOOT DISK
+    block_device_mappings {
+      device_name = "/dev/sda"
+    ebs {
+        volume_size = var.boot-disk-size #10
+        delete_on_termination = true
+        volume_type = var.volume-type #STANDARD
+        #tags = {
+        #   Name = "${local.aws_prefix}-boot-disk"
+        #}
+        }
+    }
+   
+    #ADDITIONAL DISK
+    block_device_mappings {
+      device_name = "/dev/sdb"
+    ebs {
+        volume_size = var.add-disk-size #10
+        delete_on_termination = true
+        volume_type = var.volume-type
+        snapshot_id = aws_ebs_snapshot.add_snapshot.id
+        #tags = {
+        #    Name = "${local.aws_prefix}-t-additional-disk"
+        #}
+        }
+    }
+
+    monitoring {
+        enabled = true
+    }
+
+     #network_interfaces {
+        #associate_public_ip_address = true
+      #  subnet_id = var.subnet-id
+    #}
+
+    placement {
+        availability_zone = var.zone
+    }
+
+    tag_specifications {
+        resource_type = "instance"
+
+        tags = {
+        Name = "${local.aws_prefix}"
+        }
+    }
+    #user_data = filebase64("${path.module}/example.sh")
+
+}
+
+
+
+
+

@@ -1,0 +1,8 @@
+AWS                 --         GCP
+1. KEYS                     --    SERVICE ACCOUNT
+2. Networking          --    Network
+default - vpc-035421cb609afc552
+
+3. Security group -- FIREWALL RULES
+3. Template         --  instance template
+4. Instance         -- virtual instance

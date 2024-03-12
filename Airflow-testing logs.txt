@@ -1,0 +1,79 @@
+root@ip-172-31-60-201:/home/ubuntu# ^C
+root@ip-172-31-60-201:/home/ubuntu# airflow users create -u airflow-123 -f airflow -l airflow -r Admin -p airflow -e airflow@gmail.com
+[2023-03-03 07:35:45,248] {manager.py:215} ERROR - Error adding new user to database. (sqlite3.IntegrityError) UNIQUE constraint failed: ab_user.email
+[SQL: INSERT INTO ab_user (first_name, last_name, username, password, active, email, last_login, login_count, fail_login_count, created_on, changed_on, created_by_fk, changed_by_fk) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)]
+[parameters: ('airflow', 'airflow', 'airflow-123', 'pbkdf2:sha256:260000$EvCA0QNKFOvrjfAI$64c65dbad0d58cc2a5188a1bbad9cd2a9ad8abc51c8eb2377cc3806e7fae8331', 1, 'airflow@gmail.com', None, None, None, '2023-03-03 07:35:45.246576', '2023-03-03 07:35:45.246584', None, None)]
+(Background on this error at: https://sqlalche.me/e/14/gkpj)
+Failed to create user
+root@ip-172-31-60-201:/home/ubuntu# airflow users create -u airflow-123 -f airflow -l airflow -r Admin -p airflow -e airflow1@gmail.com
+[2023-03-03 07:36:06,714] {manager.py:212} INFO - Added user airflow-123
+User "airflow-123" created with role "Admin"
+root@ip-172-31-60-201:/home/ubuntu# airflow users list
+id | username    | email              | first_name | last_name | roles
+===+=============+====================+============+===========+======
+1  | airflow     | airflow@gmail.com  | airflow    | airflow   | Admin
+2  | airflow-123 | airflow1@gmail.com | airflow    | airflow   | Admin
+
+root@ip-172-31-60-201:/home/ubuntu# grep sql_alchemy /root/airflow/airfow.
+grep: /root/airflow/airfow.: No such file or directory
+root@ip-172-31-60-201:/home/ubuntu# grep sql_alchemy /root/airflow/airfow.cfg
+grep: /root/airflow/airfow.cfg: No such file or directory
+root@ip-172-31-60-201:/home/ubuntu# cd /root/
+root@ip-172-31-60-201:~# ls
+airflow  airflow-init.sh  snap
+root@ip-172-31-60-201:~# cd airfl
+bash: cd: airfl: No such file or directory
+root@ip-172-31-60-201:~# cd airflow
+root@ip-172-31-60-201:~/airflow# grep sql_alchemy airflow.
+grep: airflow.: No such file or directory
+root@ip-172-31-60-201:~/airflow# ls
+airflow-webserver.pid  airflow.cfg  airflow.db  logs  webserver_config.py
+root@ip-172-31-60-201:~/airflow# grep sql_alchemy airflow.cfg
+sql_alchemy_conn = sqlite:////root/airflow/airflow.db
+# Example: sql_alchemy_engine_args = {"arg1": True}
+# sql_alchemy_engine_args =
+sql_alchemy_pool_enabled = True
+sql_alchemy_pool_size = 5
+sql_alchemy_max_overflow = 10
+sql_alchemy_pool_recycle = 1800
+sql_alchemy_pool_pre_ping = True
+sql_alchemy_schema =
+# sql_alchemy_connect_args =
+# When not specified, sql_alchemy_conn with a db+ scheme prefix will be used
+root@ip-172-31-60-201:~/airflow# sed -i 's#sqlite:////home/ubuntu/airflow/airflow.db#postgresql+psycopg2://admin_123a:admin_123a@airflow-db.cj0jajqgnaw0.us-east-1.rds.amazonaws.com/airflowdata#g' airflow.cfg
+root@ip-172-31-60-201:~/airflow# grep sql_alchemy airflow.cfg
+sql_alchemy_conn = sqlite:////root/airflow/airflow.db
+# Example: sql_alchemy_engine_args = {"arg1": True}
+# sql_alchemy_engine_args =
+sql_alchemy_pool_enabled = True
+sql_alchemy_pool_size = 5
+sql_alchemy_max_overflow = 10
+sql_alchemy_pool_recycle = 1800
+sql_alchemy_pool_pre_ping = True
+sql_alchemy_schema =
+# sql_alchemy_connect_args =
+# When not specified, sql_alchemy_conn with a db+ scheme prefix will be used
+root@ip-172-31-60-201:~/airflow# sed -i 's#sqlite:////root/airflow/airflow.db#postgresql+psycopg2://admin_123a:admin_123a@airflow-db.cj0jajqgnaw0.us-east-1.rds.amazonaws.com/airflowdata#g' airflow.cfg
+root@ip-172-31-60-201:~/airflow# grep sql_alchemy airflow.cfg
+sql_alchemy_conn = postgresql+psycopg2://admin_123a:admin_123a@airflow-db.cj0jajqgnaw0.us-east-1.rds.amazonaws.com/airflowdata
+# Example: sql_alchemy_engine_args = {"arg1": True}
+# sql_alchemy_engine_args =
+sql_alchemy_pool_enabled = True
+sql_alchemy_pool_size = 5
+sql_alchemy_max_overflow = 10
+sql_alchemy_pool_recycle = 1800
+sql_alchemy_pool_pre_ping = True
+sql_alchemy_schema =
+# sql_alchemy_connect_args =
+# When not specified, sql_alchemy_conn with a db+ scheme prefix will be used
+root@ip-172-31-60-201:~/airflow# airflow db init
+/usr/local/lib/python3.10/dist-packages/airflow/models/base.py:49 MovedIn20Warning: [31mDeprecated API features detected! These feature(s) are not compatible with SQLAlchemy 2.0. [32mTo prevent incompatible upgrades prior to updating applications, ensure requirements files are pinned to "sqlalchemy<2.0". [36mSet environment variable SQLALCHEMY_WARN_20=1 to show all deprecation warnings.  Set environment variable SQLALCHEMY_SILENCE_UBER_WARNING=1 to silence this message.[0m (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
+DB: postgresql+psycopg2://admin_123a:***@airflow-db.cj0jajqgnaw0.us-east-1.rds.amazonaws.com/airflowdata
+[2023-03-03 07:44:15,429] {migration.py:205} INFO - Context impl PostgresqlImpl.
+[2023-03-03 07:44:15,429] {migration.py:208} INFO - Will assume transactional DDL.
+INFO  [alembic.runtime.migration] Context impl PostgresqlImpl.
+INFO  [alembic.runtime.migration] Will assume transactional DDL.
+INFO  [alembic.runtime.migration] Running stamp_revision  -> 290244fb8b83
+WARNI [airflow.models.crypto] empty cryptography key - values will not be stored encrypted.
+Initialization done
+root@ip-172-31-60-201:~/airflow# airflow users create -u airflow-1234 -f airflow -l airflow -r Admin -p airflow -e airflowi@gmail.com

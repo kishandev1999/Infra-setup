@@ -1,0 +1,2 @@
+ssh: connect to host ec2-3-234-207-8.compute-1.amazonaws.com port 22: Connection timed out
+-- MEANS CHECK THE SECURITY GROUP RULES

@@ -1,0 +1,121 @@
+#VIDEO SOURCE
+https://www.youtube.com/watch?v=o88LNQDH2uI
+
+#FOR UBUNTU
+sudo apt update
+
+sudo apt install python3-pip
+
+sudo apt install sqlite3
+
+sudo apt install python3.10-venv
+
+
+#VIRTUAL ENV 
+python3 -m venv venv
+source venv/bin/activate
+
+#library for airflow
+sudo apt-get install libpq-dev
+
+
+
+pip install "apache-airflow[postgres]==2.5.0" --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-2.5.0/constraints-3.7.txt"
+
+#initilize database of airflow
+#This airflow needs database. Hence, we initially installed the database sqlite at beginning
+#This below command helps airflow to take that db
+airflow db init
+
+#We install postgresql to initialize the db
+#But with sqlite db, we can't run many tasks here
+# Hence we install postgresql db
+sudo apt-get install postgresql postgresql-contrib
+sudo apt install postgresql postgresql-contrib
+
+#connect to postgres database
+sudo -i -u postgres
+psql
+
+CREATE DATABASE airflow;
+CREATE USER airflow WITH PASSWORD 'airflow';
+GRANT ALL PRIVILEGES ON DATABASE airflow TO airflow;
+
+#NOW YOU WILL SEE THE AIRFLOW FOLDER HERE
+psql -d database -U user -W
+#THIS WORKED
+sudo -i -u postgres psql -c "CREATE DATABASE airflow2;"
+
+#sudo -u postgres psql -c "CREATE DATABASE airflow;"
+#sudo -u postgres psql -c "CREATE USER airflow WITH PASSWORD 'airflow';"
+#sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE airflow TO airflow;"
+
+
+# \q -- to exit from postgres db
+
+#Connect to postgress
+#inorder to replace the connection from sqlite database to postgresql string
+#user: airflow, password:airflowlocalhost, database airflow
+#THESE VALUES ARE DEFINED AT SQLALCHEMY PARAMETERS
+#grep sql_alchemy airflow.cfg
+#There you'll see the following parameters
+#{change to airflow directory!!}
+sed -i 's#sqlite:////home/ubuntu/airflow/airflow.db#postgresql+psycopg2://airflow:airflow@localhost/airflow#g' airflow.cfg
+
+                                                                        #<db user name:password@URL>
+
+#grep executor airflow.cfg
+#by default it will be sequential executor means, you only execute tasks sequential, one after another
+#change to localexecutor to do all task at multiple times
+
+sed -i 's#SequentialExecutor#LocalExecutor#g' airflow.cfg
+
+#AS db is changed, we will do run this task again
+airflow db init
+
+#create airflow user
+airflow users create -u airflow -f airflow -l airflow -r Admin -e airflow@gmail.com
+
+#Run the webserver in the backgroung
+airflow webserver &
+
+airflow scheduler
+
+
+==============================06/03
+#!/bin/bash
+
+#INSTALLATION  
+sudo apt update
+sudo apt install python3-pip
+sudo apt install python3.10-venv
+
+python3 -m venv venv
+source venv/bin/activate
+
+
+Database_Endpoint = "airflow-db.cj0jajqgnaw0.us-east-1.rds.amazonaws.com" 
+Database_name = "postgres"
+Database_username = "admin_123a"
+
+#AIRFLOW INSTALLATION 
+pip install "apache-airflow[postgres]==2.5.0" --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-2.5.0/constraints-3.7.txt"
+airflow db init
+sudo apt-get install postgresql postgresql-contrib
+
+
+psql -h $Database_Endpoint -p 5432 -d $Database_name -U $Database_username -W
+
+sudo -u postgres psql -c "CREATE DATABASE airflow;"
+sudo -u postgres psql -c "\l"
+sudo -u postgres psql -c "CREATE USER airflow WITH PASSWORD 'airflow';"
+sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE airflow TO airflow;"
+
+cd /airflow
+sed -i 's#sqlite:////home/ubuntu/airflow/airflow.db#postgresql+psycopg2://airflow:airflow@localhost/airflow#g' airflow.cfg
+sed -i 's#SequentialExecutor#LocalExecutor#g' airflow.cfg
+airflow users create -u airflow -f airflow -l airflow -r Admin -e airflow@gmail.com
+airflow webserver &
+
+airflow scheduler
+

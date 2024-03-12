@@ -1,0 +1,34 @@
+sudo apt update
+sudo apt install postgresql postgresql-contrib
+sudo systemctl start postgresql.service
+
+psql -d database -U user -W
+Connects to a database under a specific user
+-d: used to state the database name 
+-U:used to state the database user
+
+
+psql -h host -d database -U user -W
+Connect to a database that resides on another host
+-h: used to state the host 
+-d: used to state the database name 
+-U:used to state the database user
+
+endpoint :airflow-db.cj0jajqgnaw0.us-east-1.rds.amazonaws.com
+port : 5432
+username : postgres (see in master user in aw-rds-configuration-masterusername)
+
+psql -h airflow-db.cj0jajqgnaw0.us-east-1.rds.amazonaws.com -P 5432 -u postgres -p admin1234
+
+
+psql -h airflow-db.cj0jajqgnaw0.us-east-1.rds.amazonaws.com -U postgres -W
+
+psql -h airflow-db1.cj0jajqgnaw0.us-east-1.rds.amazonaws.com -u admin_123a -P
+psql -h airflow-db.cj0jajqgnaw0.us-east-1.rds.amazonaws.com -u admin_123a -P admin_123a
+sudo -u postgres psql
+
+
+
+psql -h airflow-db.cj0jajqgnaw0.us-east-1.rds.amazonaws.com -P 5432 -d postgres -u admin_123a -W
+
+psql -h airflow-db.cj0jajqgnaw0.us-east-1.rds.amazonaws.com -p 5432 -d postgres -U admin_123a -W
